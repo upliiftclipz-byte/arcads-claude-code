@@ -9,8 +9,8 @@
 
 set -euo pipefail
 
-FFMPEG="${FFMPEG:-/opt/homebrew/bin/ffmpeg}"
-FFPROBE="${FFPROBE:-/opt/homebrew/bin/ffprobe}"
+FFMPEG="${FFMPEG:-$(command -v ffmpeg || echo /opt/homebrew/bin/ffmpeg)}"
+FFPROBE="${FFPROBE:-$(command -v ffprobe || echo /opt/homebrew/bin/ffprobe)}"
 
 VIDEO="$1"
 OUT_DIR="$2"

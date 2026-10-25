@@ -27,7 +27,7 @@ Trigger on phrases like:
 
 ## Prerequisites
 
-- `.env` with `ARCADS_BASIC_AUTH` and `ARCADS_API_KEY`
+- `.env` with `ARCADS_BASIC_AUTH` (or `ARCADS_API_KEY` as a fallback)
 - A `productId` (defaults to MASTER_CONTEXT.md's "My workspace" product)
 - Reference images on disk (NOT pasted in chat — chat-pasted images are NOT accessible to the API):
   - `face/` — 5+ photos of the subject (headshot + 3/4 angles + close-ups + expressions)

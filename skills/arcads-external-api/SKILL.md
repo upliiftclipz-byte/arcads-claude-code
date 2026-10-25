@@ -1,7 +1,7 @@
 ---
 name: arcads-external-api
 description: >-
-  Creates and retrieves AI video and image-related assets via the Arcads external API (Seedance 2.0, Sora 2, Veo 3.1, Kling, Grok Video, Nano Banana, b-roll, scene, script/actor flows). Loads prompts from the bundled prompting guide and model library, respects HTTP Basic auth from ARCADS_API_KEY, and polls assets/videos until ready. Use when the user mentions Arcads, external-api.arcads.ai, Seedance, Sora2, Veo, Kling, Nano Banana, b-roll, UGC scripts, or generating marketing creative through Arcads.
+  Creates and retrieves AI video and image-related assets via the Arcads external API (Seedance 2.0, Sora 2, Veo 3.1, Kling, Grok Video, Nano Banana, b-roll, scene, script/actor flows). Loads prompts from the bundled prompting guide and model library, respects HTTP Basic auth from ARCADS_BASIC_AUTH (or ARCADS_API_KEY), and polls assets/videos until ready. Use when the user mentions Arcads, external-api.arcads.ai, Seedance, Sora2, Veo, Kling, Nano Banana, b-roll, UGC scripts, or generating marketing creative through Arcads.
 ---
 
 # Arcads external API
@@ -9,12 +9,12 @@ description: >-
 ## Configuration
 
 - **Base URL:** `https://external-api.arcads.ai` (or `ARCADS_BASE_URL`).
-- **Auth:** HTTP Basic — use `ARCADS_API_KEY` as the **username** and an **empty password** unless Arcads documentation for your key specifies otherwise. Example curl: `curl -u "$ARCADS_API_KEY:" "$ARCADS_BASE_URL/v1/products"`.
+- **Auth:** HTTP Basic. Prefer `ARCADS_BASIC_AUTH` (the pre-encoded header `scripts/setup.sh` writes to `.env`): `curl -H "Authorization: $ARCADS_BASIC_AUTH" "$ARCADS_BASE_URL/v1/products"`. Only if `ARCADS_BASIC_AUTH` is unset, fall back to `ARCADS_API_KEY` as the **username** with an **empty password**: `curl -u "$ARCADS_API_KEY:" ...` (some accounts get 403 this way).
 - **Never** print API keys, commit `.env`, or paste keys into `MASTER_CONTEXT.md`.
 
 ### If the key is missing or the API returns 401/403
 
-1. **Editor-first (default):** Ensure `.env` exists (copy from `.env.example` in the repo root). Ask the user to paste `ARCADS_API_KEY` **only inside** `.env` and save. Do not ask them to paste the key in chat unless they insist.
+1. **Editor-first (default):** Ensure `.env` exists (copy from `.env.example` in the repo root). Ask the user to run `./scripts/setup.sh`, or paste their Basic auth header into `ARCADS_BASIC_AUTH` **only inside** `.env` and save. Do not ask them to paste the key in chat unless they insist.
 2. **Chat-assisted:** If they paste the key in chat, write `.env` for them, confirm "saved to `.env`" **without repeating the key**, and remind them that chat history may retain secrets—rotate the key in Arcads if the chat could be shared.
 
 Before the first call, confirm `.gitignore` excludes `.env`.

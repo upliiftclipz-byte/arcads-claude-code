@@ -4,7 +4,7 @@ This directory contains **append-only logs** of every Arcads API generation call
 
 ## Files
 
-- **`arcads-api.jsonl`** — one JSON object per line. Every `POST` to a generation endpoint (`/v2/videos/generate`, `/v2/images/generate`, `/v1/b-roll`, `/v1/scene`, etc.) appends one line when the request is fired and updates the same line with final status/credits after polling completes.
+- **`arcads-api.jsonl`** — one JSON object per line. Every `POST` to a generation endpoint (`/v2/videos/generate`, `/v2/images/generate`, `/v1/b-roll`, `/v1/scene`, etc.) appends one line when the request is fired and updates the same line with final status/credits after polling completes. The file is gitignored: it holds your product/project IDs and asset URLs, so it stays local.
 
 ## Entry schema
 

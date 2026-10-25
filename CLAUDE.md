@@ -4,7 +4,7 @@
 
 If `.env` does not exist, tell the user to run `./scripts/setup.sh` or walk them through:
 1. Copy `.env.example` to `.env`.
-2. Paste their Arcads API key into `.env` (line: `ARCADS_API_KEY=`).
+2. Paste their Arcads Basic auth header (Settings > API in the Arcads dashboard) into `.env` (line: `ARCADS_BASIC_AUTH=`). `ARCADS_API_KEY=` is a fallback.
 3. Run `./scripts/check-arcads-env.sh` to verify.
 
 If `MASTER_CONTEXT.md` does not exist, copy `MASTER_CONTEXT.template.md` to `MASTER_CONTEXT.md`.

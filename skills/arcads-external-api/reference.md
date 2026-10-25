@@ -13,17 +13,18 @@ Override with env `ARCADS_BASE_URL` if Arcads provides a different host for your
 
 The API uses **HTTP Basic** (`securitySchemes.basic` in OpenAPI).
 
-- **Typical pattern:** use your **Arcads API key as the Basic auth username** and an **empty password** (this matches the common "Authorize" UX in Swagger: paste the key in the username field, leave password blank).
-- **Env:** `ARCADS_API_KEY` — never commit it; load from `.env` locally.
+- **Preferred:** send the pre-encoded header from the Arcads dashboard (Settings > API) as `Authorization: $ARCADS_BASIC_AUTH`. This is what `scripts/setup.sh` writes to `.env`.
+- **Fallback:** use your **Arcads API key as the Basic auth username** and an **empty password** (`-u "$ARCADS_API_KEY:"`). Some accounts get 403 this way.
+- **Env:** `ARCADS_BASIC_AUTH` or `ARCADS_API_KEY` — never commit them; load from `.env` locally.
 - **401 / 403:** key missing, wrong, or lacks permission — run the setup flow in `SKILL.md` (editor-first `.env`).
 
 ### curl example
 
 ```bash
+curl -sS -H "Authorization: $ARCADS_BASIC_AUTH" "https://external-api.arcads.ai/v1/products"
+# fallback when only ARCADS_API_KEY is set (-u 'key:' means password empty):
 curl -sS -u "$ARCADS_API_KEY:" "https://external-api.arcads.ai/v1/products"
 ```
-
-(`-u 'key:'` means password empty.)
 
 ## Model → route mapping
 
@@ -235,7 +236,7 @@ Workaround: if you want to blend multiple visual aesthetics, chain v2v calls —
 
 ```bash
 source .env && curl -sS -X POST \
-  -u "$ARCADS_API_KEY:" \
+  -H "Authorization: $ARCADS_BASIC_AUTH" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "seedance-2.0",
@@ -254,7 +255,7 @@ source .env && curl -sS -X POST \
 
 ```bash
 source .env && curl -sS -X POST \
-  -u "$ARCADS_API_KEY:" \
+  -H "Authorization: $ARCADS_BASIC_AUTH" \
   -H "Content-Type: application/json" \
   -d '{
     "model": "sora2",

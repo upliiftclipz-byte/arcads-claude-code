@@ -17,7 +17,7 @@
 #   - Asset polling and download
 #
 # Requires:
-#   - .env with ARCADS_BASIC_AUTH and ARCADS_API_KEY
+#   - .env with ARCADS_BASIC_AUTH (or ARCADS_API_KEY as a fallback)
 #   - Python 3 with PIL/Pillow installed
 #   - macOS bash 3.2+ or any bash 4+
 # ─────────────────────────────────────────────────────────────────────────────
@@ -26,8 +26,16 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 source .env
 
+if [ -z "${ARCADS_BASIC_AUTH:-}" ] && [ -n "${ARCADS_API_KEY:-}" ]; then
+  ARCADS_BASIC_AUTH="Basic $(printf '%s:' "$ARCADS_API_KEY" | base64 | tr -d '\n')"
+fi
+if [ -z "${ARCADS_BASIC_AUTH:-}" ]; then
+  echo "No ARCADS_BASIC_AUTH or ARCADS_API_KEY in .env — run ./scripts/setup.sh" >&2
+  exit 1
+fi
+
 # ─── CONFIG ─────────────────────────────────────────────────────────────────
-API="https://external-api.arcads.ai"
+API="${ARCADS_BASE_URL:-https://external-api.arcads.ai}"
 PRODUCT_ID="REPLACE_WITH_YOUR_PRODUCT_ID"  # from MASTER_CONTEXT.md
 MODEL="nano-banana-2"
 ASPECT="16:9"  # 1:1, 16:9, or 9:16
@@ -99,10 +107,10 @@ upload_file() {
     return 1
   fi
 
-  curl -sS -X PUT \
+  curl -fsS -X PUT \
     -H "Content-Type: image/jpeg" \
     --data-binary "@$prepared" \
-    "$presigned_url" >/dev/null
+    "$presigned_url" >/dev/null || { echo "UPLOAD FAIL: $file" >&2; return 1; }
   echo "$file_path"
 }
 
@@ -120,6 +128,8 @@ upload_all_fresh() {
 }
 
 # Generate a single thumbnail: upload refs → submit → poll → download.
+# Returns 1 if nothing was created (safe to retry), 2 if an asset was created
+# but failed or timed out (retrying would pay for a second generation).
 generate_one() {
   local idx=$1
   local prompt=$2
@@ -129,15 +139,17 @@ generate_one() {
   echo "[#$idx] Submitting generation..."
 
   # Build request body via Python to handle JSON encoding safely.
+  # Values go through the environment so quotes or backslashes in a prompt
+  # can't break out of the Python source.
   local body
-  body=$(python3 -c "
-import json
+  body=$(PRODUCT_ID="$PRODUCT_ID" PROMPT="$prompt" MODEL="$MODEL" ASPECT="$ASPECT" REF_JSON="$ref_json" python3 -c "
+import json, os
 print(json.dumps({
-  'productId': '$PRODUCT_ID',
-  'prompt': '''$prompt'''.strip(),
-  'model': '$MODEL',
-  'aspectRatio': '$ASPECT',
-  'referenceImages': $ref_json
+  'productId': os.environ['PRODUCT_ID'],
+  'prompt': os.environ['PROMPT'].strip(),
+  'model': os.environ['MODEL'],
+  'aspectRatio': os.environ['ASPECT'],
+  'referenceImages': json.loads(os.environ['REF_JSON'])
 }))
 ")
 
@@ -172,29 +184,39 @@ print(d.get('id','') or d.get('data',{}).get('id',''))
       echo "[#$idx] DONE!"
       echo "$poll" > "$OUTPUT_DIR/${idx}_asset.json"
       if [ -n "$url" ]; then
-        curl -sS -o "$OUTPUT_DIR/${idx}_thumbnail.png" "$url"
-        echo "[#$idx] Downloaded"
+        # Don't return 1 here: that would retry and pay for a second generation.
+        if curl -fsS -o "$OUTPUT_DIR/${idx}_thumbnail.png" "$url"; then
+          echo "[#$idx] Downloaded"
+        else
+          rm -f "$OUTPUT_DIR/${idx}_thumbnail.png"
+          echo "[#$idx] Download failed — URL is in ${idx}_asset.json"
+        fi
       fi
       return 0
     elif [ "$status" = "failed" ]; then
       echo "[#$idx] FAILED: $poll"
       echo "$poll" > "$OUTPUT_DIR/${idx}_failed.json"
-      return 1
+      return 2
     fi
   done
-  echo "[#$idx] TIMEOUT after 300s"
-  return 1
+  echo "[#$idx] TIMEOUT after 300s — asset $asset_id may still finish; check GET /v1/assets/$asset_id"
+  echo "{\"id\": \"$asset_id\", \"status\": \"timeout\"}" > "$OUTPUT_DIR/${idx}_failed.json"
+  return 2
 }
 
-# Wrapper: try once, then retry once after 15s.
+# Wrapper: retry once after 15s, but only when no asset was created.
 run_with_retry() {
   local idx=$1
   local prompt=$2
-  generate_one "$idx" "$prompt" || {
+  local rc=0
+  generate_one "$idx" "$prompt" || rc=$?
+  if [ "$rc" -eq 1 ]; then
     echo "[#$idx] Retrying after 15s..."
     sleep 15
     generate_one "$idx" "$prompt" || echo "[#$idx] Failed twice — giving up"
-  }
+  elif [ "$rc" -eq 2 ]; then
+    echo "[#$idx] Not retrying — an asset was already created (avoids a second charge)"
+  fi
 }
 
 # ─── PROMPTS ────────────────────────────────────────────────────────────────
@@ -226,8 +248,10 @@ wait
 
 echo "═══════════════════════════════════════"
 echo "DONE. Results in: $OUTPUT_DIR"
-DOWNLOADED=$(ls "$OUTPUT_DIR"/*_thumbnail.png 2>/dev/null | wc -l | tr -d ' ')
-ERRORS=$(ls "$OUTPUT_DIR"/*_error.json "$OUTPUT_DIR"/*_failed.json 2>/dev/null | wc -l | tr -d ' ')
+# find, not ls: ls exits non-zero on an unmatched glob, which under
+# set -o pipefail aborts the script before the summary prints.
+DOWNLOADED=$(find "$OUTPUT_DIR" -maxdepth 1 -name '*_thumbnail.png' | wc -l | tr -d ' ')
+ERRORS=$(find "$OUTPUT_DIR" -maxdepth 1 \( -name '*_error.json' -o -name '*_failed.json' \) | wc -l | tr -d ' ')
 echo "$DOWNLOADED downloaded, $ERRORS errors"
 echo "═══════════════════════════════════════"
 open "$OUTPUT_DIR" 2>/dev/null || true
