@@ -135,7 +135,11 @@ generate_one() {
   local prompt=$2
   echo "[#$idx] Uploading fresh references..."
   local ref_json
-  ref_json=$(upload_all_fresh) || { echo "[#$idx] Upload failed"; return 1; }
+  ref_json=$(upload_all_fresh) || {
+    echo "[#$idx] Upload failed"
+    echo '{"error": "reference upload failed"}' > "$OUTPUT_DIR/${idx}_error.json"
+    return 1
+  }
   echo "[#$idx] Submitting generation..."
 
   # Build request body via Python to handle JSON encoding safely.
@@ -189,6 +193,7 @@ print(d.get('id','') or d.get('data',{}).get('id',''))
           echo "[#$idx] Downloaded"
         else
           rm -f "$OUTPUT_DIR/${idx}_thumbnail.png"
+          echo '{"error": "download failed; URL is in the _asset.json file"}' > "$OUTPUT_DIR/${idx}_error.json"
           echo "[#$idx] Download failed — URL is in ${idx}_asset.json"
         fi
       fi
@@ -213,6 +218,8 @@ run_with_retry() {
   if [ "$rc" -eq 1 ]; then
     echo "[#$idx] Retrying after 15s..."
     sleep 15
+    # Drop the first attempt's error so the summary reflects only the retry.
+    rm -f "$OUTPUT_DIR/${idx}_error.json"
     generate_one "$idx" "$prompt" || echo "[#$idx] Failed twice — giving up"
   elif [ "$rc" -eq 2 ]; then
     echo "[#$idx] Not retrying — an asset was already created (avoids a second charge)"

@@ -102,7 +102,12 @@ echo ""
 echo ""
 
 # ── Step 4: Verify API connectivity ──────────────────────────────────────────
-if grep -q "your_base64_encoded_credentials_here" "$ROOT/.env" 2>/dev/null || grep -q "your_key_here" "$ROOT/.env" 2>/dev/null; then
+# Only uncommented lines count: the template's commented-out
+# "# ARCADS_API_KEY=your_key_here" example must not look like a placeholder.
+has_creds=0
+grep -E '^ARCADS_BASIC_AUTH=' "$ROOT/.env" 2>/dev/null | grep -qv "your_base64_encoded_credentials_here" && has_creds=1
+grep -E '^ARCADS_API_KEY=' "$ROOT/.env" 2>/dev/null | grep -qv "your_key_here" && has_creds=1
+if [[ "$has_creds" == "0" ]]; then
   echo "Credentials not yet set in .env — skipping connectivity check."
   echo "Run ./scripts/check-arcads-env.sh after adding your credentials."
 else
