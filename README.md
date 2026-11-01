@@ -69,6 +69,7 @@ Uses Sora 2 with your product photo as a style reference to generate a video dir
 | Path | What it does |
 |------|-------------|
 | `skills/arcads-external-api/` | The skill: API reference, prompting guide, per-model prompt library |
+| `skills/brag/`, `skills/brag-slim/` | [/brag](https://github.com/latent-spaces/brag) (MIT): turns a project into a short launch video with music and share copy |
 | `MASTER_CONTEXT.template.md` | Template for your workspace context (credit costs, brand voice, learnings) |
 | `MASTER_CONTEXT.md` | Your personalized copy (created by setup, not committed to git) |
 | `.env` | Your API key (created by setup, never committed) |
