@@ -1,0 +1,22 @@
+{
+  "name": "animated-reel",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.535",
+    "@remotion/google-fonts": "^4.0.535",
+    "@remotion/motion-blur": "^4.0.535",
+    "@remotion/paths": "^4.0.535",
+    "@remotion/shapes": "^4.0.535",
+    "@remotion/transitions": "^4.0.535",
+    "@types/react": "^18.3.31",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.535",
+    "typescript": "^5.9.3"
+  }
+}
