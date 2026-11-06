@@ -15,6 +15,12 @@ model, so there is no credit meter and you can make as many as you want. The tem
 - Copy `template/` to a new folder OUTSIDE iCloud/Dropbox (node_modules hangs synced folders),
   for example `~/reels/<reel-name>/`, then run `npm install` there.
 - Check it works: `npx remotion still src/index.ts Explainer out/test.png --frame=60`.
+- Fonts ship inside the project (`@fontsource` packages, loaded in `src/theme.ts`), so renders
+  need no internet for fonts. Render threads match the machine's cores automatically.
+- No GPU, or the Chrome download is blocked (cloud containers, CI)? Set two variables before
+  rendering: `export REMOTION_GL=swangle` and `export REMOTION_BROWSER=/path/to/chrome-headless-shell`
+  (any Chrome or Chromium already installed). Expect ~1-2 s per frame there instead of a few
+  frames per second on a Mac.
 - Live preview while you work: `npx remotion studio`.
 - Remotion is free for individuals and companies of up to 3 people. Bigger teams need a
   company licence (remotion.dev/license). Tell the user if that applies.
@@ -73,6 +79,9 @@ Render stills at the key moments and look at them together:
 for s in 1 5 10 15 20 25 30; do npx remotion still src/index.ts Explainer out/st_$s.png --frame=$((s*30)) --scale=0.33; done
 ```
 
+Use 1/3 scale for review stills, not full size. Work out frame numbers from the beat start
+times in `timeline.ts` (frame = seconds x 30) so each still lands on the scene you mean.
+
 Look for: text overlapping text, a window covering the captions, empty frames, a blank
 first frame (the first frame is the thumbnail in many feeds, so start the hook at `tin={-0.6}`).
 
@@ -92,7 +101,9 @@ If the voice is AI-generated, turn on Instagram's "AI info" label when posting.
 npx remotion render src/index.ts Explainer60 out/reel.mp4 --props='{"captions":true}'
 ```
 
-`Explainer60` is 60 fps (smoother), `Explainer` is 30 fps (twice as fast to render). Render a
+`Explainer60` is 60 fps (smoother), `Explainer` is 30 fps (twice as fast to render). A full render takes
+minutes, so on a slow machine run it in the background and log progress to a file
+(`... > out/render.log 2>&1`), so an interrupted render can be seen and restarted. Render a
 `captions:false` copy too if the user wants to add their own captions in the app.
 
 ## 7. Hand it over
