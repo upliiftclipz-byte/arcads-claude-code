@@ -63,12 +63,14 @@ Uses Sora 2 with your product photo as a style reference to generate a video dir
 - "Recreate this influencer's look from a reference photo"
 - "Make a Nano Banana product hero image"
 - "Generate 5 different ad variations for this product"
+- "Write and voice a 15s voiceover for this ad, 3 takes" (local Chatterbox TTS, no credits; run `./skills/chatterbox-voiceover/scripts/setup-chatterbox.sh` once)
 
 ## What's in the box
 
 | Path | What it does |
 |------|-------------|
 | `skills/arcads-external-api/` | The skill: API reference, prompting guide, per-model prompt library |
+| `skills/chatterbox-voiceover/` | Local voiceovers with open-source Chatterbox TTS: voice cloning (with consent), paralinguistic tags, 23-language localization, timed voiceover + original music onto an existing video |
 | `MASTER_CONTEXT.template.md` | Template for your workspace context (credit costs, brand voice, learnings) |
 | `MASTER_CONTEXT.md` | Your personalized copy (created by setup, not committed to git) |
 | `.env` | Your API key (created by setup, never committed) |
