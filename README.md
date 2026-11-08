@@ -70,7 +70,7 @@ Uses Sora 2 with your product photo as a style reference to generate a video dir
 | Path | What it does |
 |------|-------------|
 | `skills/arcads-external-api/` | The skill: API reference, prompting guide, per-model prompt library |
-| `skills/chatterbox-voiceover/` | Local voiceovers with open-source Chatterbox TTS: voice cloning (with consent), paralinguistic tags, 23-language localization |
+| `skills/chatterbox-voiceover/` | Local voiceovers with open-source Chatterbox TTS: voice cloning (with consent), paralinguistic tags, 23-language localization, timed voiceover + original music onto an existing video |
 | `MASTER_CONTEXT.template.md` | Template for your workspace context (credit costs, brand voice, learnings) |
 | `MASTER_CONTEXT.md` | Your personalized copy (created by setup, not committed to git) |
 | `.env` | Your API key (created by setup, never committed) |
