@@ -55,6 +55,8 @@ Sets the technical foundation. Always leads the prompt.
 | `LIGHTING_SOURCE` | natural bedroom window lighting, bathroom vanity mirror lighting, golden hour balcony light, overhead kitchen light, car dashboard light, ring light on desk (subtle) | Natural > artificial. Specify the source, not just "good lighting" |
 | `CAMERA_ANGLE` | casual handheld selfie angle, phone propped on counter, mirror selfie angle, laptop webcam angle, phone in one hand walking | Describes HOW they're filming, not just the frame |
 
+For these phone angles as named presets (CAM-01 to CAM-06), see the [camera preset library](../camera-presets.md).
+
 **Example:**
 > 15 seconds UGC style skincare review video, filmed on smartphone, natural bedroom window lighting, casual handheld selfie angle.
 

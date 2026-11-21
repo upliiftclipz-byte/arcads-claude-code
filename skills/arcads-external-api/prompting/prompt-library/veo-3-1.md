@@ -16,6 +16,8 @@
 {{OPENING_BEAT}}. {{ACTION_OVER_TIME}}. Setting: {{SETTING}}. Camera: {{CAMERA}}. Style: {{STYLE}}. Lighting: {{LIGHT}}. Optional dialogue: {{DIALOGUE}}.
 ```
 
+**Camera:** fill the camera slot from the [camera preset library](../camera-presets.md) (e.g. `CAM-07 slow push-in`); one move per shot, with a speed adverb. With a `startFrame`, prefer modest moves (CAM-01, CAM-07, CAM-22).
+
 ## Example
 
 ```text

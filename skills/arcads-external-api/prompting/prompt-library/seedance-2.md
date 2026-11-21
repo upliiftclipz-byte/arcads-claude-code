@@ -49,7 +49,7 @@ Subject + Action + Camera + Style + Constraints
 
 - **Subject** — who/what is in the scene. Age, clothing, expression, posture all help.
 - **Action** — what happens. Present tense, one primary movement per shot.
-- **Camera** — framing (wide, medium, close-up) and movement (dolly-in, pan, handheld).
+- **Camera** — framing (wide, medium, close-up) and movement (dolly-in, pan, handheld). Use a named preset from the [camera preset library](../camera-presets.md); change moves between `[00:0X]` timestamp segments.
 - **Style** — visual tone: lighting, color grading, atmosphere.
 - **Constraints** — reduce artifacts: "maintain face consistency," "steady motion," "no distortion."
 

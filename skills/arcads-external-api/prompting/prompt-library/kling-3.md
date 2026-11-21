@@ -18,6 +18,8 @@ The published OpenAPI does **not** expose a dedicated `POST .../kling/...` route
 {{SUBJECT}}. {{ACTION_MOTION}}. Environment: {{ENV}}. Camera: {{CAM}}. Mood: {{MOOD}}. Avoid: {{NEGATIVE}}.
 ```
 
+**Camera:** fill the camera slot from the [camera preset library](../camera-presets.md) (e.g. `CAM-07 slow push-in`); one move per shot, with a speed adverb. Kling handles smooth orbit, dolly and crane moves well (CAM-08, CAM-20, CAM-21).
+
 ## Example
 
 ```text

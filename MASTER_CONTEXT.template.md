@@ -152,6 +152,12 @@ These are confirmed behaviors of the Arcads external API. They apply to all work
 
 ## Changelog
 
+### 2026-11-21 -- Camera preset library
+
+- **Decision:** Direct camera work with named presets (CAM-01…CAM-23) instead of free-form words like "cinematic".
+- **Change:** Added `prompting/camera-presets.md` (presets, per-model support, ad recipes, framing/lens cheat sheet, Arcads native camera-movement endpoint) and linked it from every model recipe.
+- **Why:** Consistent, reusable camera language across models and ads; named moves can be swapped one at a time when testing.
+
 ### 2026-11-21 -- Ad variations
 
 - **Decision:** Make test variants by splicing short generated hooks onto an approved ad body, and resize locally.

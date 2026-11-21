@@ -44,6 +44,7 @@ See [reference.md](../../reference.md) for the full schema. Key fields:
 ## Checklist
 
 - [ ] Follow the vendor guide for framing **subject**, **style**, and **constraints**.
+- [ ] For shot size, lens and angle wording, use the [framing and lens cheat sheet](../camera-presets.md#framing-and-lens-cheat-sheet).
 - [ ] State whether the output should be **photoreal**, **illustration**, **product hero**, etc.
 - [ ] Call out **text on image** only if the pipeline supports legible text for your use case.
 - [ ] Use `POST /V2/images/generate` (uppercase V2) — not `/v2/`.

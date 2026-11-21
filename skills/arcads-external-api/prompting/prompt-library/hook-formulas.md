@@ -45,6 +45,8 @@ The new hook clip must look like the same video: **same person, outfit, setting,
 style and audio level** as the body's first frame. In the generation prompt, describe the hook action
 and line, then copy the body's setting/camera/lighting description word for word. Use the body's
 first frame as the reference image or start frame (see the ad-variations workflow).
+Scroll-stopping camera moves for hooks (snap zoom, walk-and-talk, dolly zoom) are in the
+[camera preset library](../camera-presets.md#quick-picker); keep the body's camera style if continuity matters more.
 
 ## Presenting hooks for approval
 

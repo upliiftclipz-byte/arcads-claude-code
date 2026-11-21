@@ -16,6 +16,8 @@
 {{HOOK_OPEN}}. {{SUBJECT}} in {{SETTING}}. Camera: {{CAMERA_MOVE}}. Lighting: {{LIGHTING}}. Style: {{STYLE}}. Audio mood: {{AUDIO_MOOD}}. End on {{ENDING_IMAGE}}.
 ```
 
+**Camera:** fill the camera slot from the [camera preset library](../camera-presets.md) (e.g. `CAM-07 slow push-in`); one move per shot, with a speed adverb.
+
 ## Example (replace IDs in JSON separately)
 
 ```text

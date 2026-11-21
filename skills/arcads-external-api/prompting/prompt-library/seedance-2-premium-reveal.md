@@ -145,6 +145,8 @@ The choreography — how the product moves and how the camera moves around it. I
 
 **Key rule:** Every camera movement is SLOW. Movements should take 3-5 seconds minimum. Use adverbs like "slowly," "deliberately," "gracefully."
 
+More named moves (orbit, macro sweep, low-angle hero, pull-back reveal) are in the [camera preset library](../camera-presets.md); the **Premium reveal** recipe there maps directly onto this format.
+
 ---
 
 ### Layer 5: Variant showcase (optional)

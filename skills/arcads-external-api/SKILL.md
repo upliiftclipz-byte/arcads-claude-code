@@ -64,6 +64,7 @@ Prefer the **shortest** path: if the user only needs a single model, do not crea
 
 - **MANDATORY:** Before composing any prompt for the API, **read the relevant `prompting/prompt-library/*.md` file** for the chosen model/workflow. Do NOT skip this step — every prompt must align with the vendor guide's formula and best practices.
 - Build **one** clear prompt paragraph; avoid keyword soup.
+- **Camera direction:** pick a named move from [prompting/camera-presets.md](prompting/camera-presets.md) (23 presets, ad recipes, lens/framing cheat sheet) instead of vague words like "cinematic". Name the preset in the prompt you show the user so it can be reused in variations.
 - For Seedance 2.0 / Sora2 / Veo3.1 / Kling / Grok Video / Nano Banana, align with the **official vendor guides** linked in each `prompting/prompt-library/*.md` file (do not paste full vendor docs into chat—summarize checks).
 - Merge slot values from the user and from **`MASTER_CONTEXT.md`** when it conflicts with defaults.
 
@@ -318,6 +319,7 @@ Details and checklist items: [prompting/prompt-library/nano-banana.md](prompting
   - [prompting/prompt-library/seedance-2-feature-walkthrough.md](prompting/prompt-library/seedance-2-feature-walkthrough.md) — fast-paced feature walkthrough demo.
   - [prompting/analyze-video/SKILL.md](prompting/analyze-video/SKILL.md) — reverse-engineer a reference video into a reusable Seedance 2.0 prompting template.
   - [prompting/clone-ad/SKILL.md](prompting/clone-ad/SKILL.md) — clone a reference video ad for a different product (end-to-end: analyze → adapt → generate).
+- [prompting/camera-presets.md](prompting/camera-presets.md) — named camera moves (CAM-01…CAM-23), per-model support, ad shot recipes, framing/lens cheat sheet, Arcads native camera-movement preset.
 - **Ad variations:**
   - [prompting/ad-variations/SKILL.md](prompting/ad-variations/SKILL.md) — hooks × aspect ratios from one approved ad, with manifest and testing advice.
   - [prompting/prompt-library/hook-formulas.md](prompting/prompt-library/hook-formulas.md) — 12 hook archetypes, rules and the hook approval block.

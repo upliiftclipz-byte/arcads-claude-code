@@ -76,6 +76,12 @@ Uses [Chatterbox](https://github.com/resemble-ai/chatterbox) on your machine (no
 
 The agent finds where the original hook ends, writes hooks from different proven archetypes for your approval, generates only short hook clips that match the original's look (same actor/voice or the body's first frame as reference), splices each onto the original body, and renders 9:16, 1:1, 4:5 and 16:9 versions plus a `manifest.csv` for uploading and A/B testing. Splicing and resizing run locally with ffmpeg and cost nothing. Just want resizes? "Make square and landscape versions of this ad."
 
+#### Camera presets
+
+> "Make a premium reveal of this bottle — orbit, then push in"
+
+Every prompt can use named camera moves from `skills/arcads-external-api/prompting/camera-presets.md`: 23 presets (handheld selfie, POV hands, slow push-in, slow orbit, macro sweep, snap zoom, whip pan, tracking, crane…), shot-by-shot ad recipes (UGC testimonial, product demo, premium reveal, unboxing), notes on which models follow which moves, and a lens/framing cheat sheet for stills. Ask for a preset by name ("use CAM-08") to get the same look across ads.
+
 #### Other things to try
 
 - "Recreate this influencer's look from a reference photo"
