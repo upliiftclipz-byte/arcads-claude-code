@@ -85,11 +85,36 @@ These still work and are kept for backward compatibility. Prefer the v2 unified 
 - `GET /v1/assets/{id}/watch` — watch link when applicable.
 - For Nano Banana images, poll the same way — the response will include image URLs instead of video URLs.
 
-### Script / actor pipeline
+### Talking actors (voice + lip-sync) — preferred
 
-- `POST /v1/scripts` — create script (folder or project).
-- `POST /v1/scripts/{scriptId}/generate` — trigger generation.
+Schema read from the live OpenAPI spec (`/docs-json`) on 2026-11-21. Wrapped by `scripts/arcads_voice.py`;
+workflow in `prompting/talking-actor/SKILL.md`.
+
+- `POST /v2/talking-actors/generate` — `GenerateTalkingActorsDto`:
+  - `model`* enum `arcads_1.0` | `audio_driven` | `omnihuman`
+  - `productId`*, `projectId`
+  - `script` (required unless `referenceAudios`) **or** `referenceAudios` (array of upload `filePath`s, **max 1**)
+  - `actors`* — array of `{ situationId*, voiceId? }`; one video per actor. `voiceId` is opaque (Arcads UUID or ElevenLabs ID); omitted → the actor's default voice.
+  - `autoAddScriptEmotion` (bool)
+  - Response 201: array of `{ id, model, status }` with `status` `processing` | `completed` | `failed`.
+- `GET /v2/talking-actors/{id}` — `{ id, model, status, createdAt, updatedAt, error }`.
+- `GET /v2/talking-actors/{id}/watch` — **302 redirect** to the watch URL (read the `Location` header).
+- `GET /v1/situations` — actors in settings. Filters: `talkingActorEnabled`, `actorGender[]`, `actorAge[]` (`Young Adult`, `Adult`, `Senior`), `actorName`, `isPro`, `cameraMovementEnabled`, `gesturesEnabled`, `showYourAppEnabled`, `unboxingPovEnabled`, `page`, `pageSize`. Items include `actor{name,gender,age,skinTone,imageUrl}`, `previewUrl`, `imageUrl`, `tags`, `emotions`, `accessories`, `cameraAngle`.
+- `GET /v1/situations/mine` — the workspace's own situations (custom actors created in the dashboard).
+- `GET /v1/actors`, `GET /v1/actors/{actorId}/situations` — browse by actor (`freeSpeech`, `age[]`, `gender[]`, `skinTone[]`).
+- `GET /v1/voices` — filters `language[]`, `gender[]`, `age[]`; items `{ id, name, gender, age, accent, language, descriptive, audioUrl, expiresAt? }`.
+- `POST /v1/voices/clone` — `{ name*, language*, gender?, audioS3FilePaths*[] }` (audio or video samples; voice is isolated from music/noise). **API-cloned voices are temporary** (`expiresAt`). 402 = plan/credit limit.
+- `POST /v1/elevenlabs/credentials`, `POST /v1/elevenlabs/trigger-import` — import ElevenLabs voices.
+- There is **no endpoint to create an actor from an image**; custom actors are made in the dashboard.
+- Credits for talking actors are not documented; record observed `creditsCharged` in `logs/arcads-api.jsonl` and `MASTER_CONTEXT.md`.
+
+### Script / actor pipeline (legacy v1)
+
+- `POST /v1/scripts` — `ScriptCreationDto` `{ folderId | projectId, name*, text*, videos[{situationId*, voiceId?}] }`.
+- `POST /v1/scripts/{scriptId}/generate` — trigger generation (returns boolean).
+- `POST /v1/scripts/{scriptId}/generate-omnihuman` — OmniHuman generation for the script.
 - `GET /v1/scripts/{scriptId}/videos` — list videos for script.
+- `POST /v1/omnihuman`, `POST /v1/audio-driven` — `{ productId*, text*, videos[{situationId*, voiceId?}] }`. Superseded by `/v2/talking-actors/generate` (same models, plus audio input).
 
 ## Key request bodies (summary)
 

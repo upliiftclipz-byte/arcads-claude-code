@@ -8,6 +8,10 @@ MASTER_CONTEXT.md
 *.log
 outputs/
 output/
+# Local voiceover environment (chatterbox-voiceover skill) and personal voice samples
+.venv-chatterbox/
+references/voices/
+__pycache__/
 references/youtube thumbnail/
 # Disposable one-off thumbnail iteration scripts (not the canonical skill script)
 scripts/generate-thumbnails.sh

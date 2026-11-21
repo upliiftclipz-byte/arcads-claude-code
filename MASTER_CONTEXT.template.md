@@ -32,6 +32,18 @@ _Fill in your plan's credit costs below. The agent references this table before 
 | Nano Banana 2 (image, `nano-banana-2`) | 0.03 | ~35s generation time |
 | Nano Banana Pro (image, `nano-banana`) | _(fill in)_ | |
 | Nano Banana (scene) | _(fill in)_ | |
+| Talking actor `arcads_1.0` | _(fill in)_ | Per actor video; check `logs/arcads-api.jsonl` |
+| Talking actor `audio_driven` | _(fill in)_ | Per actor video |
+| Talking actor `omnihuman` | _(fill in)_ | Per actor video |
+| Voice clone (`/v1/voices/clone`) | _(fill in)_ | API clones are temporary (`expiresAt`) |
+| Chatterbox voiceover | 0 | Runs locally (chatterbox-voiceover skill) |
+
+## Voices
+
+_Voice IDs you use often (Arcads library, cloned, or imported). Note expiry dates for API-cloned voices._
+
+| Name | voiceId | Source | Expires | Notes |
+|------|---------|--------|---------|-------|
 
 ## Brand (optional)
 
@@ -139,6 +151,12 @@ These are confirmed behaviors of the Arcads external API. They apply to all work
 - QA retries skip a second credit confirmation but still bill credits.
 
 ## Changelog
+
+### 2026-11-21 -- Voice and lip-sync
+
+- **Decision:** Use `POST /v2/talking-actors/generate` for talking-head/lip-sync ads, with local Chatterbox voiceovers for free iteration.
+- **Change:** Added the talking-actor workflow, `arcads_voice.py` helper (actors, voices, cloning, generate/poll/log/download) and the chatterbox-voiceover skill.
+- **Why:** Voice and lip-sync were the biggest gap versus all-in-one platforms; the v2 endpoint also accepts a voiceover file, so audio can be perfected locally before spending credits.
 
 ### YYYY-MM-DD -- Template entry
 

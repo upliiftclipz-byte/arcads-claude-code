@@ -51,9 +51,10 @@ All video models use `POST /v2/videos/generate` with the appropriate `model` val
 | **UGC / selfie-style** (authentic reels, cross-model) | Any video model via `POST /v2/videos/generate` | [prompt-library/ugc-selfie-style.md](prompting/prompt-library/ugc-selfie-style.md) — cross-model UGC guide. For Seedance 2.0 specifically, use [seedance-2-ugc.md](prompting/prompt-library/seedance-2-ugc.md) instead. |
 | **Create a new AI influencer** from text (character sheet) | **Two-pass:** (1) hero portrait via `POST /v2/images/generate`, get approval; (2) 9 angles with hero as `referenceImages`. Save to `references/influencers/`. | [prompt-library/character-sheet.md](prompting/prompt-library/character-sheet.md) |
 | **UGC product selfie** — AI influencer holding a product | Combine character hero + product photo + style references as `referenceImages`. | [prompt-library/ugc-product-selfie.md](prompting/prompt-library/ugc-product-selfie.md) |
-| **Talking avatar / script** (actors, voices) | `POST /v1/scripts`, `POST /v1/scripts/{id}/generate` | [prompting/guide.md](prompting/guide.md) |
-| **OmniHuman** | `POST /v1/omnihuman` | [prompting/guide.md](prompting/guide.md) |
-| **Audio-driven** | `POST /v1/audio-driven` | [prompting/guide.md](prompting/guide.md) |
+| **Talking actor / lip-sync** — an actor says a script, or lip-syncs to a voiceover, in a chosen or cloned voice (models `arcads_1.0`, `audio_driven`, `omnihuman`) | `POST /v2/talking-actors/generate` via `scripts/arcads_voice.py talk` | [prompting/talking-actor/SKILL.md](prompting/talking-actor/SKILL.md) |
+| **Voice cloning** (owned/permitted voices only) | `POST /v1/voices/clone` via `scripts/arcads_voice.py clone-voice` | [prompting/talking-actor/SKILL.md](prompting/talking-actor/SKILL.md) |
+| **Free local voiceover** (narration, or audio to lip-sync) | Chatterbox TTS, no API call | [../chatterbox-voiceover/SKILL.md](../chatterbox-voiceover/SKILL.md) |
+| Legacy script pipeline / OmniHuman / audio-driven v1 | `POST /v1/scripts`, `/v1/omnihuman`, `/v1/audio-driven` | Prefer the talking-actor row above; see [reference.md](reference.md) |
 
 Prefer the **shortest** path: if the user only needs a single model, do not create scripts unless they ask for actors/lip-sync workflows.
 
@@ -160,7 +161,7 @@ Total spoken words: ~28  |  Target duration: 15s  |  Fits at natural pace: ✅
 Approve this dialogue? (yes / edit / rewrite)
 ```
 
-This gate applies to **Seedance 2.0**, **Veo 3.1**, **Sora 2**, and **Scene** — any flow where the model speaks. Skip for silent flows (B-roll, pure product-hero, premium-reveal with no voiceover, Nano Banana images).
+This gate applies to **Seedance 2.0**, **Veo 3.1**, **Sora 2**, **Scene**, **talking actors** and **Chatterbox voiceovers** — any flow where someone speaks. Skip for silent flows (B-roll, pure product-hero, premium-reveal with no voiceover, Nano Banana images).
 
 ### Model-specific notes
 
@@ -315,6 +316,10 @@ Details and checklist items: [prompting/prompt-library/nano-banana.md](prompting
   - [prompting/prompt-library/seedance-2-feature-walkthrough.md](prompting/prompt-library/seedance-2-feature-walkthrough.md) — fast-paced feature walkthrough demo.
   - [prompting/analyze-video/SKILL.md](prompting/analyze-video/SKILL.md) — reverse-engineer a reference video into a reusable Seedance 2.0 prompting template.
   - [prompting/clone-ad/SKILL.md](prompting/clone-ad/SKILL.md) — clone a reference video ad for a different product (end-to-end: analyze → adapt → generate).
+- **Voice and lip-sync:**
+  - [prompting/talking-actor/SKILL.md](prompting/talking-actor/SKILL.md) — talking actors (script or audio → lip-synced actor video), voice library, voice cloning.
+  - [scripts/arcads_voice.py](scripts/arcads_voice.py) — helper for actors, voices, cloning, generation, polling, logging and download.
+  - [../chatterbox-voiceover/SKILL.md](../chatterbox-voiceover/SKILL.md) — free local voiceovers to iterate on delivery before spending credits.
 - **Other models:**
   - [prompting/prompt-library/influencer-recreation.md](prompting/prompt-library/influencer-recreation.md) — analyze a reference photo and recreate the influencer.
   - [prompting/prompt-library/ugc-selfie-style.md](prompting/prompt-library/ugc-selfie-style.md) — cross-model UGC guide (iPhone aesthetic, negative prompts, per-model formulas).

@@ -58,6 +58,18 @@ Uses Veo 3.1 with `startFrame` to animate your approved UGC still. The video sta
 
 Uses Sora 2 with your product photo as a style reference to generate a video directly — no starting frame needed. Faster but less control over the person's appearance.
 
+#### Talking actor ad (voice + lip-sync)
+
+> "Make a 15-second testimonial: a young woman in her bedroom says this script in an excited voice"
+
+The agent shortlists lip-sync-ready Arcads actors and voices (with preview links), confirms the script and cost, then generates the lip-synced video with `POST /v2/talking-actors/generate`. Repeat with several actor/voice pairs to A/B test the same script. You can also clone a voice you own, or lip-sync an actor to your own voiceover file.
+
+#### Free local voiceover
+
+> "Write a voiceover for this ad and generate it — then have an actor lip-sync it"
+
+Uses [Chatterbox](https://github.com/resemble-ai/chatterbox) on your machine (no credits) so you can iterate on wording and delivery, then hands the audio to a talking actor or Seedance 2.0. One-time setup: `./skills/chatterbox-voiceover/scripts/setup-chatterbox.sh`.
+
 #### Other things to try
 
 - "Recreate this influencer's look from a reference photo"
@@ -69,6 +81,8 @@ Uses Sora 2 with your product photo as a style reference to generate a video dir
 | Path | What it does |
 |------|-------------|
 | `skills/arcads-external-api/` | The skill: API reference, prompting guide, per-model prompt library |
+| `skills/arcads-external-api/scripts/arcads_voice.py` | Talking actors, voices, voice cloning: generate, poll, log, download |
+| `skills/chatterbox-voiceover/` | Free local text-to-speech for voiceovers (setup script + `tts.py`) |
 | `MASTER_CONTEXT.template.md` | Template for your workspace context (credit costs, brand voice, learnings) |
 | `MASTER_CONTEXT.md` | Your personalized copy (created by setup, not committed to git) |
 | `.env` | Your API key (created by setup, never committed) |
@@ -103,6 +117,8 @@ Find your key: **[Arcads Dashboard > Settings > API](https://app.arcads.ai/setti
 | **Sora 2** | Video | Longer videos (up to 20s) from text prompts. Product photo as style ref (no starting frame). | varies |
 | **Kling 3.0** | Video | B-roll and scene generation (via scene/b-roll endpoints) | varies |
 | **Nano Banana 2** | Image | UGC stills, character sheets, product shots, influencer recreation | 0.03 |
+| **Talking actors** (`arcads_1.0`, `audio_driven`, `omnihuman`) | Video | Lip-synced actor reading a script or a voiceover, chosen or cloned voice | varies |
+| **Chatterbox** (local) | Audio | Voiceovers and audio to lip-sync | free |
 
 ## Reference images
 
