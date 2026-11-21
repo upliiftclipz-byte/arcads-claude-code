@@ -152,6 +152,12 @@ These are confirmed behaviors of the Arcads external API. They apply to all work
 
 ## Changelog
 
+### 2026-11-21 -- Ad variations
+
+- **Decision:** Make test variants by splicing short generated hooks onto an approved ad body, and resize locally.
+- **Change:** Added the ad-variations workflow, hook-formulas library and `ad_variants.py` (suggest-cut, frame, trim, splice, reframe, matrix + manifest).
+- **Why:** Hooks drive most of an ad's performance; regenerating only 3-5 s per hook and resizing for free makes testing cheap.
+
 ### 2026-11-21 -- Voice and lip-sync
 
 - **Decision:** Use `POST /v2/talking-actors/generate` for talking-head/lip-sync ads, with local Chatterbox voiceovers for free iteration.

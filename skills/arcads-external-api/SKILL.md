@@ -38,6 +38,8 @@ All video models use `POST /v2/videos/generate` with the appropriate `model` val
 | **Seedance 2.0 feature walkthrough** — fast-paced feature demo | `POST /v2/videos/generate` with `model: "seedance-2.0"` | [seedance-2.md](prompting/prompt-library/seedance-2.md) + [seedance-2-feature-walkthrough.md](prompting/prompt-library/seedance-2-feature-walkthrough.md) |
 | **Reverse-engineer a video style** into a reusable Seedance 2.0 template | Follow the analyze-video skill | [prompting/analyze-video/SKILL.md](prompting/analyze-video/SKILL.md) |
 | **Clone/replicate an existing video ad** for a different product | Follow the clone-ad skill | [prompting/clone-ad/SKILL.md](prompting/clone-ad/SKILL.md) |
+| **Variations of an approved ad** — new hooks on the same body, every aspect ratio (9:16, 1:1, 4:5, 16:9), manifest for testing | Follow the ad-variations skill (`scripts/ad_variants.py`; only the hook clips cost credits) | [prompting/ad-variations/SKILL.md](prompting/ad-variations/SKILL.md) + [hook-formulas.md](prompting/prompt-library/hook-formulas.md) |
+| **Resize an ad** for other placements (no new content) | `scripts/ad_variants.py reframe` (local, free) | [prompting/ad-variations/SKILL.md](prompting/ad-variations/SKILL.md) step 6 |
 | Raw **Sora 2** video from text (plus product) | `POST /v2/videos/generate` with `model: "sora2"` | [prompt-library/sora-2.md](prompting/prompt-library/sora-2.md) |
 | **Sora** remix of an existing asset | `POST /v1/sora2/remix/video` | [sora-2.md](prompting/prompt-library/sora-2.md) |
 | **Veo 3.1** video | `POST /v2/videos/generate` with `model: "veo31"` | [prompt-library/veo-3-1.md](prompting/prompt-library/veo-3-1.md) |
@@ -316,6 +318,10 @@ Details and checklist items: [prompting/prompt-library/nano-banana.md](prompting
   - [prompting/prompt-library/seedance-2-feature-walkthrough.md](prompting/prompt-library/seedance-2-feature-walkthrough.md) — fast-paced feature walkthrough demo.
   - [prompting/analyze-video/SKILL.md](prompting/analyze-video/SKILL.md) — reverse-engineer a reference video into a reusable Seedance 2.0 prompting template.
   - [prompting/clone-ad/SKILL.md](prompting/clone-ad/SKILL.md) — clone a reference video ad for a different product (end-to-end: analyze → adapt → generate).
+- **Ad variations:**
+  - [prompting/ad-variations/SKILL.md](prompting/ad-variations/SKILL.md) — hooks × aspect ratios from one approved ad, with manifest and testing advice.
+  - [prompting/prompt-library/hook-formulas.md](prompting/prompt-library/hook-formulas.md) — 12 hook archetypes, rules and the hook approval block.
+  - [scripts/ad_variants.py](scripts/ad_variants.py) — local ffmpeg helper: probe, suggest-cut, frame, trim, splice, reframe, matrix.
 - **Voice and lip-sync:**
   - [prompting/talking-actor/SKILL.md](prompting/talking-actor/SKILL.md) — talking actors (script or audio → lip-synced actor video), voice library, voice cloning.
   - [scripts/arcads_voice.py](scripts/arcads_voice.py) — helper for actors, voices, cloning, generation, polling, logging and download.

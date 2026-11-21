@@ -70,6 +70,12 @@ The agent shortlists lip-sync-ready Arcads actors and voices (with preview links
 
 Uses [Chatterbox](https://github.com/resemble-ai/chatterbox) on your machine (no credits) so you can iterate on wording and delivery, then hands the audio to a talking actor or Seedance 2.0. One-time setup: `./skills/chatterbox-voiceover/scripts/setup-chatterbox.sh`.
 
+#### Ad variations (hooks × aspect ratios)
+
+> "Make 3 new hooks for this ad and give me every placement size"
+
+The agent finds where the original hook ends, writes hooks from different proven archetypes for your approval, generates only short hook clips that match the original's look (same actor/voice or the body's first frame as reference), splices each onto the original body, and renders 9:16, 1:1, 4:5 and 16:9 versions plus a `manifest.csv` for uploading and A/B testing. Splicing and resizing run locally with ffmpeg and cost nothing. Just want resizes? "Make square and landscape versions of this ad."
+
 #### Other things to try
 
 - "Recreate this influencer's look from a reference photo"
@@ -82,6 +88,7 @@ Uses [Chatterbox](https://github.com/resemble-ai/chatterbox) on your machine (no
 |------|-------------|
 | `skills/arcads-external-api/` | The skill: API reference, prompting guide, per-model prompt library |
 | `skills/arcads-external-api/scripts/arcads_voice.py` | Talking actors, voices, voice cloning: generate, poll, log, download |
+| `skills/arcads-external-api/scripts/ad_variants.py` | Hook swaps, aspect-ratio versions and test manifests (local ffmpeg) |
 | `skills/chatterbox-voiceover/` | Free local text-to-speech for voiceovers (setup script + `tts.py`) |
 | `MASTER_CONTEXT.template.md` | Template for your workspace context (credit costs, brand voice, learnings) |
 | `MASTER_CONTEXT.md` | Your personalized copy (created by setup, not committed to git) |
