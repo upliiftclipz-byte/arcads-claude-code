@@ -4,7 +4,10 @@
 # Usage (from the repo root):
 #   skills/chatterbox-voiceover/scripts/voiceover-to-video.sh --video in.mp4 --beats beats.tsv --out out.mp4 \
 #     [--model turbo|nano|original|multilingual] [--seed 7] [--voice ref.wav] [--lang es] \
-#     [--exaggeration 0.6 --cfg 0.4] [--music bed.wav] [--music-db -14] [--lufs -14] [--rerender]
+#     [--exaggeration 0.6 --cfg 0.4] [--music bed.wav] [--music-db -14] [--lufs -14] [--rerender] [--fit 1.15]
+#
+# --fit MAX: a line longer than its window is sped up (pitch kept) by up to MAX (e.g. 1.15 = 15%) to fit.
+# Lines needing more than MAX still WARN. Leave it off for natural pacing; use it for word-synced captions.
 #
 # beats.tsv: one line per beat, tab-separated: start_s <TAB> end_s <TAB> name <TAB> spoken line
 # (lines starting with # are comments). Each line is rendered once and cached in <out>-beats/<name>.wav;
@@ -14,7 +17,7 @@ ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 PY="${CHATTERBOX_PY:-$ROOT/.venv-chatterbox/bin/python}"
 VO="$ROOT/skills/chatterbox-voiceover/scripts/voiceover.py"
 
-VIDEO=""; BEATS=""; OUT=""; MODEL="turbo"; SEED="7"; MUSIC=""; MUSIC_DB="-14"; LUFS="-14"; RERENDER=0
+VIDEO=""; BEATS=""; OUT=""; MODEL="turbo"; SEED="7"; MUSIC=""; MUSIC_DB="-14"; LUFS="-14"; RERENDER=0; FIT_MAX=""
 VO_ARGS=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -27,6 +30,7 @@ while [[ $# -gt 0 ]]; do
     --music-db) MUSIC_DB="$2"; shift 2;;
     --lufs) LUFS="$2"; shift 2;;
     --rerender) RERENDER=1; shift;;
+    --fit) FIT_MAX="$2"; shift 2;;
     --voice|--lang|--exaggeration|--cfg|--temperature|--device) VO_ARGS+=("$1" "$2"); shift 2;;
     -h|--help) sed -n '2,12p' "$0"; exit 0;;
     *) echo "Unknown option: $1" >&2; exit 2;;
@@ -45,13 +49,23 @@ inputs=(); filters=""; labels=""; n=0; warn=0
 while IFS=$'\t' read -r start end beat line; do
   [[ -z "${start// }" || "$start" == \#* ]] && continue
   wav="$CACHE/$beat.wav"
-  [[ -f "$wav" ]] || "$PY" "$VO" --model "$MODEL" --seed "$SEED" "${VO_ARGS[@]}" --text "$line" --out "$wav" >/dev/null
+  [[ -f "$wav" ]] || "$PY" "$VO" --model "$MODEL" --seed "$SEED" "${VO_ARGS[@]}" --text "$line" --out "$wav" >/dev/null </dev/null
   len=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$wav")
   win=$(awk -v a="$start" -v b="$end" 'BEGIN{print b-a}')
-  flag="ok"
-  if awk -v l="$len" -v w="$win" 'BEGIN{exit !(l>w)}'; then flag="WARN: over by $(awk -v l="$len" -v w="$win" 'BEGIN{printf "%.2f", l-w}')s"; warn=1; fi
+  flag="ok"; use="$wav"
+  if awk -v l="$len" -v w="$win" 'BEGIN{exit !(l>w)}'; then
+    ratio=$(awk -v l="$len" -v w="$win" 'BEGIN{printf "%.3f", l/w}')
+    if [[ -n "$FIT_MAX" ]] && awk -v r="$ratio" -v m="$FIT_MAX" 'BEGIN{exit !(r<=m)}'; then
+      # Speed this line up just enough to fit (pitch preserved). Raw take stays untouched.
+      use="$CACHE/$beat.fit.wav"
+      ffmpeg -nostdin -y -loglevel error -i "$wav" -af "atempo=$ratio" "$use"
+      flag="fit: sped up x$ratio"; len=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$use")
+    else
+      flag="WARN: over by $(awk -v l="$len" -v w="$win" 'BEGIN{printf "%.2f", l-w}')s"; warn=1
+    fi
+  fi
   printf "%-12s %5.2fs / %4.1fs  %-22s %s\n" "$beat" "$len" "$win" "$flag" "$line"
-  n=$((n+1)); inputs+=(-i "$wav")
+  n=$((n+1)); inputs+=(-i "$use")
   ms=$(awk -v s="$start" 'BEGIN{printf "%d", s*1000}')
   filters+="[$n:a]aresample=48000,adelay=${ms}|${ms}[a$n];"; labels+="[a$n]"
 done < "$BEATS"
@@ -68,9 +82,9 @@ if [[ -n "$MUSIC" ]]; then
 fi
 filters+=",loudnorm=I=$LUFS:TP=-1.5:LRA=11[mix]"
 
-ffmpeg -y -loglevel error -i "$VIDEO" "${inputs[@]}" -filter_complex "$filters" \
+ffmpeg -nostdin -y -loglevel error -i "$VIDEO" "${inputs[@]}" -filter_complex "$filters" \
   -map 0:v -map "[mix]" -c:v copy -c:a aac -b:a 192k -ar 48000 -shortest "$OUT"
-I=$(ffmpeg -hide_banner -i "$OUT" -vn -af ebur128 -f null - 2>&1 | awk '/ I:/{v=$2} END{print v}')
+I=$(ffmpeg -nostdin -hide_banner -i "$OUT" -vn -af ebur128 -f null - 2>&1 | awk '/ I:/{v=$2} END{print v}')
 echo "Wrote $OUT (${DUR}s, ${I} LUFS)"
 [[ $warn -eq 1 ]] && echo "Some lines overrun their window: shorten them, or delete their wav in $CACHE and rerun with another --seed."
 exit 0

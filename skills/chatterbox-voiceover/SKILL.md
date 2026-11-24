@@ -127,6 +127,7 @@ Use this when the user already has a cut video (for example a motion-graphics re
      --music outputs/voiceovers/<date>/<slug>/bed.wav --music-db -14 --lufs -14
    ```
    - Each line is placed at its start time. The script prints each line's length against its window and flags overruns with `WARN`.
+   - For word-synced (karaoke) captions, add `--fit 1.15`: a line that runs long is sped up just enough to fit (pitch kept, at most 15%). Lines that would need more still `WARN`.
    - Lines are cached in `<out>-beats/`. To re-roll one line, delete its `.wav` and rerun with another `--seed`. `--rerender` redoes all of them.
    - The music ducks under the voice through a sidechain compressor. The final mix is normalized to `--lufs` (−14 suits Instagram, TikTok and YouTube Shorts). Expect about −15 LUFS measured, because loudnorm runs in a single pass. The original video audio is replaced, not mixed.
 4. Report each line's fit and the measured loudness. Send the video and ask the user to listen. You can't judge how it sounds.
